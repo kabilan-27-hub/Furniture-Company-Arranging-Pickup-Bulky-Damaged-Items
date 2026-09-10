@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated Delivery & Bulky Return Pickup Planner</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <section class="auth-screen" id="auth-screen">
+        <div class="auth-left-panel">
+            <div class="auth-brand">
+                <i class="fa-solid fa-truck-ramp-box auth-brand-icon"></i>
+                <div>
+                    <span class="auth-brand-kicker">OptiRoute</span>
+                    <h1>Furniture Logistics</h1>
+                </div>
+            </div>
+
+            <div class="auth-intro">
+                <span class="auth-label">Delivery Console</span>
+                <h2>Route Planning Workspace</h2>
+                <p>Manage delivery capacity, returns, drivers, and pickup constraints in one secure planner.</p>
+
+                <div class="auth-feature-list">
+                    <div class="auth-feature">
+                        <i class="fa-solid fa-route"></i>
+                        <span>Optimized routing</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fa-solid fa-people-group"></i>
+                        <span>Driver coordination</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Operational control</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-footer">
+                <span>© 2026 OptiRoute Operations</span>
+            </div>
+        </div>
+
+        <div class="auth-card-wrap">
+            <div class="auth-card glass">
+                <div class="auth-card-header">
+                    <div>
+                        <span class="auth-card-kicker">Welcome back</span>
+                        <h2 id="auth-title">Sign in to your account</h2>
+                    </div>
+                    <span class="auth-status-dot"><i class="fa-solid fa-circle"></i> Online</span>
+                </div>
+
+                <div class="auth-tabs">
+                    <button class="auth-tab active" type="button" data-auth="login">Login</button>
+                    <button class="auth-tab" type="button" data-auth="register">Register</button>
+                </div>
+
+                <div class="auth-form-wrapper">
+                    <form class="auth-form active" id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">Email address</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="login-email" placeholder="admin@optiroute.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="login-password" placeholder="Enter your password" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row between">
+                            <label class="checkbox-row">
+                                <input type="checkbox">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="text-link">Forgot password?</a>
+                        </div>
+
+                        <button class="btn btn-primary btn-block auth-submit" type="submit">
+                            <i class="fa-solid fa-right-to-bracket"></i> Login to Dashboard
+                        </button>
+                        <div class="auth-message" id="login-message"></div>
+                    </form>
+
+                    <form class="auth-form" id="register-form">
+                        <div class="form-row two-columns">
+                            <div class="form-group">
+                                <label for="register-name">Full name</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-user"></i>
+                                    <input type="text" id="register-name" placeholder="Jane Smith" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="register-company">Company</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-building"></i>
+                                    <input type="text" id="register-company" placeholder="Furniture Co." required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-group">
+                                <label for="register-email">Work email</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-envelope"></i>
+                                    <input type="email" id="register-email" placeholder="name@company.com" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="register-phone">Phone number</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <input type="tel" id="register-phone" placeholder="+1 555 000 0000" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-group">
+                                <label for="register-role">Role</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                    <select id="register-role" required>
+                                        <option value="">Select role</option>
+                                        <option>Operations Manager</option>
+                                        <option>Dispatcher</option>
+                                        <option>Planner</option>
+                                        <option>Fleet Admin</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="register-password">Password</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-lock"></i>
+                                    <input type="password" id="register-password" placeholder="Create password" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-block auth-submit" type="submit">
+                            <i class="fa-solid fa-user-plus"></i> Create Account
+                        </button>
+                        <div class="auth-message" id="register-message"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="app-container" id="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-truck-ramp-box brand-icon"></i>
+                <div class="brand-text">
+                    <h2>OptiRoute</h2>
+                    <span>Return Planner MVP</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-tab="dashboard-tab">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard & Analytics
+                </button>
+                <button class="nav-btn" data-tab="map-tab">
+                    <i class="fa-solid fa-map-location-dot"></i> Interactive Map Routes
+                </button>
+                <button class="nav-btn" data-tab="rejections-tab">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Rejection Diagnostics
+                </button>
+                <button class="nav-btn" data-tab="overrides-tab">
+                    <i class="fa-solid fa-user-shield"></i> Authorised Overrides
+                </button>
+                <button class="nav-btn" data-tab="edge-tests-tab">
+                    <i class="fa-solid fa-vial-circle-check"></i> Edge Case Test Suite
+                </button>
+                <button class="nav-btn" data-tab="ethics-tab">
+                    <i class="fa-solid fa-scale-balanced"></i> Ethics & Validation
+                </button>
+            </nav>
+
+            <div class="sidebar-controls">
+                <label for="objective-select">Optimization Objective</label>
+                <select id="objective-select" class="form-control">
+                    <option value="OBJECTIVE_A">Objective A — Cost & Distance</option>
+                    <option value="OBJECTIVE_B">Objective B — Service & Reliability</option>
+                    <option value="BASELINE">Baseline — Separate Return Trips</option>
+                </select>
+
+                <button id="run-planner-btn" class="btn btn-primary btn-block glow-effect">
+                    <i class="fa-solid fa-play"></i> Run Route Planner
+                </button>
+                <button id="export-csv-btn" class="btn btn-secondary btn-block">
+                    <i class="fa-solid fa-file-csv"></i> Export Route CSV
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1 id="page-heading">Integrated Forward Delivery & Bulky Return Planner</h1>
+                    <p class="subtitle">Operational Command Dashboard & Constraint Optimization Solver</p>
+                </div>
+                <div class="header-status">
+                    <span class="status-badge live">
+                        <i class="fa-solid fa-circle"></i> Engine Active
+                    </span>
+                    <span class="status-info" id="dataset-summary-text">
+                        Loading dataset...
+                    </span>
+                </div>
+            </header>
+
+            <!-- TAB 1: DASHBOARD & COMPARATIVE METRICS -->
+            <section id="dashboard-tab" class="tab-content active">
+                <!-- KPI Summary Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon blue"><i class="fa-solid fa-route"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">Baseline Return KM</span>
+                            <h3 id="kpi-baseline-km">-- km</h3>
+                            <span class="kpi-subtext">Separate return trip baseline</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card glass highlight">
+                        <div class="kpi-icon green"><i class="fa-solid fa-gas-pump"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">Incremental KM</span>
+                            <h3 id="kpi-incremental-km">-- km</h3>
+                            <span class="kpi-subtext green-text" id="kpi-km-reduction-pct">--% Reduction</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon purple"><i class="fa-solid fa-dollar-sign"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">Total Fleet Cost</span>
+                            <h3 id="kpi-total-cost">$--</h3>
+                            <span class="kpi-subtext">Operating + overtime costs</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon emerald"><i class="fa-solid fa-leaf"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">CO₂ Emissions</span>
+                            <h3 id="kpi-co2">-- kg</h3>
+                            <span class="kpi-subtext">Estimated carbon footprint</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon orange"><i class="fa-solid fa-clock"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">On-Time Pickups</span>
+                            <h3 id="kpi-ontime-pct">--%</h3>
+                            <span class="kpi-subtext">Within customer time window</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card glass">
+                        <div class="kpi-icon cyan"><i class="fa-solid fa-boxes-packing"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">Capacity Utilization</span>
+                            <h3 id="kpi-utilization">--% Vol / --% Wt</h3>
+                            <span class="kpi-subtext">Peak payload volume/weight</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparative Experiment Table -->
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-table-columns"></i> 3-Way Experiment Comparison (Baseline vs Objective A vs Objective B)</h3>
+                        <button id="refresh-comparison-btn" class="btn btn-sm btn-outline">
+                            <i class="fa-solid fa-rotate"></i> Re-Calculate All
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table" id="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Performance Metric</th>
+                                    <th>Baseline (Separate)</th>
+                                    <th>Objective A (Cost Focus)</th>
+                                    <th>Objective B (Service Focus)</th>
+                                    <th>Optimal Objective</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Forward Delivery KM</td>
+                                    <td id="comp-base-fwd">--</td>
+                                    <td id="comp-obja-fwd">--</td>
+                                    <td id="comp-objb-fwd">--</td>
+                                    <td>--</td>
+                                </tr>
+                                <tr>
+                                    <td>Separate Return KM</td>
+                                    <td id="comp-base-ret">--</td>
+                                    <td id="comp-obja-ret">0 km (Combined)</td>
+                                    <td id="comp-objb-ret">0 km (Combined)</td>
+                                    <td><span class="badge badge-success">Combined</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Incremental Return KM</strong></td>
+                                    <td id="comp-base-inc">--</td>
+                                    <td id="comp-obja-inc" class="green-text">--</td>
+                                    <td id="comp-objb-inc" class="blue-text">--</td>
+                                    <td id="comp-best-inc">--</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Distance (KM)</td>
+                                    <td id="comp-base-total-km">--</td>
+                                    <td id="comp-obja-total-km">--</td>
+                                    <td id="comp-objb-total-km">--</td>
+                                    <td id="comp-best-total-km">--</td>
+                                </tr>
+                                <tr>
+                                    <td>Operating Cost ($)</td>
+                                    <td id="comp-base-cost">--</td>
+                                    <td id="comp-obja-cost">--</td>
+                                    <td id="comp-objb-cost">--</td>
+                                    <td id="comp-best-cost">--</td>
+                                </tr>
+                                <tr>
+                                    <td>CO₂ Emissions (kg)</td>
+                                    <td id="comp-base-co2">--</td>
+                                    <td id="comp-obja-co2">--</td>
+                                    <td id="comp-objb-co2">--</td>
+                                    <td id="comp-best-co2">--</td>
+                                </tr>
+                                <tr>
+                                    <td>On-Time Pickup %</td>
+                                    <td id="comp-base-ontime">--</td>
+                                    <td id="comp-obja-ontime">--</td>
+                                    <td id="comp-objb-ontime">--</td>
+                                    <td id="comp-best-ontime">--</td>
+                                </tr>
+                                <tr>
+                                    <td>Assigned Returns / Total</td>
+                                    <td id="comp-base-assigned">--</td>
+                                    <td id="comp-obja-assigned">--</td>
+                                    <td id="comp-objb-assigned">--</td>
+                                    <td id="comp-best-assigned">--</td>
+                                </tr>
+                                <tr>
+                                    <td>Driver Overtime Hours</td>
+                                    <td id="comp-base-overtime">--</td>
+                                    <td id="comp-obja-overtime">--</td>
+                                    <td id="comp-objb-overtime">--</td>
+                                    <td id="comp-best-overtime">--</td>
+                                </tr>
+                                <tr>
+                                    <td>Avg Volume Utilization %</td>
+                                    <td id="comp-base-vol-util">--</td>
+                                    <td id="comp-obja-vol-util">--</td>
+                                    <td id="comp-objb-vol-util">--</td>
+                                    <td id="comp-best-vol-util">--</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: INTERACTIVE MAP & ROUTE TIMELINE -->
+            <section id="map-tab" class="tab-content">
+                <div class="map-layout">
+                    <div class="map-container glass">
+                        <div id="route-map"></div>
+                    </div>
+                    <div class="route-details-panel glass">
+                        <div class="panel-header">
+                            <h3><i class="fa-solid fa-truck-fast"></i> Route Sequence Details</h3>
+                            <select id="route-filter-select" class="form-control form-control-sm">
+                                <option value="ALL">All Vehicle Routes</option>
+                            </select>
+                        </div>
+                        <div id="route-timeline-container" class="timeline-scroll">
+                            <p class="text-muted">Run planner to render vehicle route sequences.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: REJECTION DIAGNOSTICS -->
+            <section id="rejections-tab" class="tab-content">
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-circle-xmark red-text"></i> Rejected Return Diagnostic Breakdown</h3>
+                        <span class="badge badge-warning" id="rejection-count-badge">0 Rejected</span>
+                    </div>
+                    <p class="panel-subtitle">
+                        Every rejected return includes detailed operational diagnostic reasons (capacity overflow, window conflicts, dimension limits, or shift bounds).
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table" id="rejections-table">
+                            <thead>
+                                <tr>
+                                    <th>Return ID</th>
+                                    <th>Customer</th>
+                                    <th>Item Description</th>
+                                    <th>Volume / Weight</th>
+                                    <th>Priority</th>
+                                    <th>Primary Root Cause Diagnostic</th>
+                                    <th>Action / Override</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rejections-tbody">
+                                <tr><td colspan="7" class="text-center">No rejected returns to report.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: AUTHORISED OVERRIDES -->
+            <section id="overrides-tab" class="tab-content">
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-signature"></i> Dispatcher Authorised Override Management</h3>
+                        <button id="open-override-modal-btn" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-plus"></i> Submit New Override
+                        </button>
+                    </div>
+                    <p class="panel-subtitle">
+                        Authorised dispatchers can explicitly override specific soft constraints or minor tolerances (with mandatory audit reason logging). Silent violations are strictly prohibited.
+                    </p>
+
+                    <div class="table-responsive">
+                        <table class="table" id="overrides-table">
+                            <thead>
+                                <tr>
+                                    <th>Override ID</th>
+                                    <th>Dispatcher</th>
+                                    <th>Role</th>
+                                    <th>Return ID</th>
+                                    <th>Target Vehicle</th>
+                                    <th>Constraint Overridden</th>
+                                    <th>Reason / Business Justification</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overrides-tbody">
+                                <tr><td colspan="8" class="text-center">No authorised overrides logged yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: EDGE CASE TEST SUITE -->
+            <section id="edge-tests-tab" class="tab-content">
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-microchip"></i> Automated Edge-Case Test Suite</h3>
+                        <button id="run-tests-btn" class="btn btn-success">
+                            <i class="fa-solid fa-vial"></i> Run 5 Edge Case Tests
+                        </button>
+                    </div>
+                    <p class="panel-subtitle">
+                        Validates system resilience against capacity overflow, time window conflicts, oversized items, shift bounds, and return competition.
+                    </p>
+
+                    <div id="test-results-container" class="test-grid">
+                        <div class="test-card glass">
+                            <div class="test-header">
+                                <h4>Edge Case 1 — Capacity Overflow</h4>
+                                <span class="badge badge-secondary">Not Run</span>
+                            </div>
+                            <p>Item weight/volume exceeding vehicle limit triggers rejection or vehicle reallocation.</p>
+                        </div>
+                        <div class="test-card glass">
+                            <div class="test-header">
+                                <h4>Edge Case 2 — Time-Window Conflict</h4>
+                                <span class="badge badge-secondary">Not Run</span>
+                            </div>
+                            <p>Pickup time window outside mandatory delivery schedule is flagged.</p>
+                        </div>
+                        <div class="test-card glass">
+                            <div class="test-header">
+                                <h4>Edge Case 3 — Oversized Item</h4>
+                                <span class="badge badge-secondary">Not Run</span>
+                            </div>
+                            <p>Item length (4.5m) exceeding vehicle max length (3.0m) physically rejected.</p>
+                        </div>
+                        <div class="test-card glass">
+                            <div class="test-header">
+                                <h4>Edge Case 4 — Driver Shift Limit</h4>
+                                <span class="badge badge-secondary">Not Run</span>
+                            </div>
+                            <p>Pickup causing driver overtime beyond shift limit rejected or flagged.</p>
+                        </div>
+                        <div class="test-card glass">
+                            <div class="test-header">
+                                <h4>Edge Case 5 — Multiple Returns Priority</h4>
+                                <span class="badge badge-secondary">Not Run</span>
+                            </div>
+                            <p>HIGH priority returns prioritized over LOW priority under tight capacity.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: ETHICS & STAKEHOLDER VALIDATION -->
+            <section id="ethics-tab" class="tab-content">
+                <div class="panel glass">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Ethics & Responsible Operations Policy</h3>
+                    <div class="ethics-body">
+                        <div class="ethics-item">
+                            <i class="fa-solid fa-user-clock icon"></i>
+                            <div>
+                                <h4>Driver & Workforce Well-being</h4>
+                                <p>Maximum shift limits (9 hours) and mandatory rest periods are enforced as hard constraints. Route optimization never forces dangerous driving speeds or excessive driver overtime.</p>
+                            </div>
+                        </div>
+                        <div class="ethics-item">
+                            <i class="fa-solid fa-box-tissue icon"></i>
+                            <div>
+                                <h4>Vehicle Loading Safety</h4>
+                                <p>Both volume ($m^3$) and weight ($kg$) payloads are monitored dynamically at every stop along the route timeline to avoid dangerous vehicle overloading.</p>
+                            </div>
+                        </div>
+                        <div class="ethics-item">
+                            <i class="fa-solid fa-lock icon"></i>
+                            <div>
+                                <h4>Auditability & Privacy</h4>
+                                <p>Every constraint override requires explicit dispatcher identity, timestamp, and justification logging. Customer location data is stored strictly for routing optimization.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel glass" style="margin-top: 1.5rem;">
+                    <h3><i class="fa-solid fa-comments-dollar"></i> Simulated Stakeholder Validation Report</h3>
+                    <div class="stakeholder-grid">
+                        <div class="stakeholder-card glass">
+                            <div class="user-info">
+                                <i class="fa-solid fa-user-tie"></i>
+                                <div>
+                                    <h4>Senior Logistics Planner</h4>
+                                    <span>Evaluation: 4.8 / 5.0</span>
+                                </div>
+                            </div>
+                            <p>"The side-by-side comparison between Baseline and Combined routes clearly demonstrates the 24% incremental kilometer savings. The diagnostic explanations for rejected returns make dispatcher triage effortless."</p>
+                        </div>
+                        <div class="stakeholder-card glass">
+                            <div class="user-info">
+                                <i class="fa-solid fa-truck-pilot"></i>
+                                <div>
+                                    <h4>Fleet Dispatch Supervisor</h4>
+                                    <span>Evaluation: 4.9 / 5.0</span>
+                                </div>
+                            </div>
+                            <p>"The authorised override workflow is fantastic. It prevents silent violations while giving us operational flexibility when a customer has an emergency return."</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Authorised Override Modal -->
+    <div id="override-modal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-shield"></i> Authorised Dispatcher Override</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="override-form">
+                    <div class="form-group">
+                        <label>Dispatcher Name</label>
+                        <input type="text" id="ovr-dispatcher-name" class="form-control" value="Sarah Jenkins" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dispatcher Role</label>
+                        <input type="text" id="ovr-dispatcher-role" class="form-control" value="Lead Fleet Supervisor" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label>Return Request ID</label>
+                            <select id="ovr-return-id" class="form-control" required>
+                                <option value="">Select Return...</option>
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label>Target Vehicle ID</label>
+                            <select id="ovr-vehicle-id" class="form-control" required>
+                                <option value="">Select Vehicle...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Constraint Overridden</label>
+                        <select id="ovr-constraint-type" class="form-control" required>
+                            <option value="TIME_WINDOW">Time Window Tolerance Extension (+30 mins)</option>
+                            <option value="OVERTIME">Driver Shift Overtime Approval (+45 mins)</option>
+                            <option value="CAPACITY">Payload Volume Over-Allocation (+5%)</option>
+                            <option value="DIMENSION_FIT">Special Dimensional Handling Fit</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Justification & Operational Reason</label>
+                        <textarea id="ovr-reason" class="form-control" rows="3" placeholder="Provide operational justification for auditing..." required>VIP customer requested priority return; driver agreed to extended shift.</textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Apply & Recalculate Routes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
