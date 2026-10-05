@@ -226,6 +226,9 @@ def solve_combined_planner(
 
         is_feas, viols, final_metrics = evaluate_route_feasibility(veh, best_stops, active_overrides)
         
+        # Post-optimization feasibility assertion safeguard
+        assert is_feas or len(active_overrides) > 0, f"Post 2-opt route refinement generated infeasible sequence for vehicle {veh_id}: {viols}"
+
         deliv_count = sum(1 for s in best_stops if s.stop_type == "DELIVERY")
         ret_count = sum(1 for s in best_stops if s.stop_type == "RETURN")
 
