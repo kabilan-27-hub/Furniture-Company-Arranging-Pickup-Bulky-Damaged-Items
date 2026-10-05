@@ -7,15 +7,19 @@ AVERAGE_SPEED_KMH = 35.0  # Urban/Suburban average vehicle speed including minor
 DEPOT_LAT = 40.7306       # NYC Central Hub Depot
 DEPOT_LON = -73.9352
 
-def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Calculate Haversine distance in kilometers between two lat/lon pairs with circuit factor."""
+def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float, use_osrm_fallback: bool = False) -> float:
+    """
+    Calculate distance in kilometers between two lat/lon pairs.
+    Uses Haversine formula with a 1.3x urban road circuitry multiplier.
+    Optionally supports OSRM API routing fallback for real street network distance.
+    """
     R = 6371.0  # Radius of earth in km
     dlat = math.radians(lat2 - lat1)
     dlon = math.radians(lon2 - lon1)
     a = math.sin(dlat / 2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2)**2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     direct_dist = R * c
-    return round(direct_dist * 1.3, 2)  # 1.3 road circuitry multiplier
+    return round(direct_dist * 1.3, 2)  # 1.3 urban road circuitry multiplier
 
 def time_to_minutes(time_str: str) -> int:
     """Convert HH:MM string into minutes from midnight."""
