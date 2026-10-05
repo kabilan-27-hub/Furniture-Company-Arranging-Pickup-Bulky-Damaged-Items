@@ -1,4 +1,11 @@
 import sys
+import os
+
+# Auto-resolve repository root for imports from repo root without requiring PYTHONPATH
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
 from backend.models.schemas import DeliveryStop, ReturnRequest, Vehicle
 from backend.planner.constraints import check_item_physical_fit, evaluate_route_feasibility
 from backend.planner.optimizer import solve_combined_planner
