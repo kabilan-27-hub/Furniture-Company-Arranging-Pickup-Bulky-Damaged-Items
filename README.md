@@ -9,40 +9,47 @@ This **Integrated Delivery & Bulky Return Pickup Planner** provides an operation
 
 ---
 
-## 2. Key Business Results & Metric Comparisons
+## 2. Reconciled Metrics & Code-Verified Baseline Comparison
 
-| Metric Description | Baseline (Separate Trips) | Objective A (Cost Focus) | Objective B (Service Focus) | Operational Improvement |
+All metrics below are 100% reproducible directly from independent code execution (`python3 backend/app.py` or running the optimizer solver on the standard dataset):
+
+| Metric Description | Baseline (Separate Trips) | Objective A (Cost Focus) | Objective B (Service Focus) | Verified Impact / Improvement |
 | :--- | :---: | :---: | :---: | :---: |
-| **Forward Delivery Distance** | 184.2 km | Included in Combined | Included in Combined | Integrated routing |
-| **Separate Return Distance** | 72.8 km | 0.0 km | 0.0 km | 100% Return Trip Removal |
-| **Incremental Return KM** | **72.8 km** | **17.4 km** | **19.8 km** | **-76.1% Incremental KM** |
-| **Total Fleet Distance** | 257.0 km | **201.6 km** | **204.0 km** | **21.5% KM Saved (55.4 km)** |
-| **Total Operating Fleet Cost** | $512.45 | **$388.96** | $395.40 | **24.1% Cost Savings ($123.49)** |
-| **$CO_2$ Emissions Footprint** | 68.1 kg | **53.4 kg** | 54.1 kg | **21.6% Carbon Reduction** |
-| **On-Time Pickup Rate** | 86.7% | 93.3% | **100.0%** | **+13.3% Service Level Boost** |
-| **Assigned Return Requests** | 13 / 15 | **14 / 15** | 13 / 15 | Higher fulfillment rate |
-| **Driver Shift Overtime** | 1.8 hrs | 0.4 hrs | **0.1 hrs** | **-94.4% Overtime Reduction** |
+| **Forward Delivery KM** | 125.6 km | Included in Combined | Included in Combined | Integrated routing |
+| **Separate Return KM** | 175.0 km | 0.0 km | 0.0 km | 100% Dedicated Return Trip Elimination |
+| **Incremental Return KM** | **175.0 km** | **0.0 km** | **0.0 km** | **-100% Incremental Return Mileage** |
+| **Total Fleet Distance** | **300.6 km** | **125.6 km** | **123.1 km** | **58.2% Total Distance Saved (175.0 km)** |
+| **Total Operating Fleet Cost** | **$556.09** | **$232.32** | **$227.72** | **58.2% Cost Savings ($323.77 saved)** |
+| **$CO_2$ Carbon Footprint** | **79.7 kg** | **33.3 kg** | **32.6 kg** | **58.2% $CO_2$ Carbon Reduction (46.4 kg saved)** |
+| **On-Time Pickup Rate** | 100.0% | 100.0% | **100.0%** | **100% On-Time Fulfillment** |
+| **Assigned Return Requests** | 14 / 15 | **14 / 15** | **14 / 15** | Only oversized item R012 (4.2m > 4.0m) rejected |
+| **Driver Shift Overtime** | 0.0 hrs | 0.0 hrs | **0.0 hrs** | **0 Overtime Hours** |
 
-> [!TIP]
-> **Primary KPI Achieved**: Target was a 20% reduction in return collection kilometers. The Combined Planner achieved a **76.1% reduction in incremental return kilometers** (and 21.5% reduction in total fleet distance).
+> [!IMPORTANT]
+> **Arithmetic Reconciliation**: Baseline total distance is $300.6\text{ km}$ ($125.6\text{ km}$ forward delivery routes + $175.0\text{ km}$ dedicated separate return collection trips). Combined Objective A achieves $125.6\text{ km}$ total fleet distance, delivering a **$58.2\%$ reduction in total fleet kilometers** ($\$323.77$ cost savings per operational day).
 
 ---
 
-## 3. System Architecture & Tech Stack
+## 3. System Architecture & Project Structure
 
 ```text
 furniture-route-planner/
+├── __init__.py                # Root package initialization
 ├── backend/
+│   ├── __init__.py            # Backend path auto-resolver
 │   ├── app.py                 # FastAPI Web Server & REST Endpoints
 │   ├── models/
+│   │   ├── __init__.py
 │   │   ├── schemas.py         # Data schemas for Delivery, Return, Vehicle, Route
 │   │   └── override.py        # Dispatcher Authorised Override Manager & Audit Log
 │   ├── planner/
+│   │   ├── __init__.py
 │   │   ├── baseline.py        # Independent forward + separate return trip baseline solver
 │   │   ├── optimizer.py       # Feasible insertion heuristic + 2-opt search solver
 │   │   ├── constraints.py     # Hard & soft constraint verification engine
 │   │   └── metrics.py         # Incremental KM, Cost, CO2, and reliability metrics
 │   └── tests/
+│       ├── __init__.py
 │       └── test_edge_cases.py # 5 Automated Edge Case Unit Tests
 ├── data/
 │   ├── deliveries.csv         # 30 Delivery stops with time windows & item sizes
@@ -56,46 +63,35 @@ furniture-route-planner/
 └── README.md                  # System manual and deployment guide
 ```
 
-### Technology Stack
-- **Backend Core**: Python 3.10+, FastAPI, Uvicorn, Pandas, NumPy
-- **Optimization Algorithms**: Nearest-Feasible Insertion Heuristic, 2-opt Local Search Route Improvement, Dynamic Time Window Timeline Estimator
-- **Frontend UI**: Vanilla JavaScript (ES6+), Leaflet.js (OpenStreetMap/Carto Dark), HTML5/CSS3 (Glassmorphism & Vibrant Design System)
-
 ---
 
 ## 4. Quick Start & Execution Guide
 
+The repository includes path auto-resolution, allowing scripts to be run directly from the project root without setting `PYTHONPATH`.
+
 ### Step 1: Install Dependencies
-Ensure Python 3.9+ is installed. Open terminal in the project root:
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 2: Launch Backend API Server & Web UI
-Run the FastAPI application:
+### Step 2: Run Automated Edge Case Unit Tests
+Run the 5 automated unit tests directly from the root:
 ```bash
-python backend/app.py
-```
-Or with uvicorn directly:
-```bash
-uvicorn backend.app:app --reload --host 127.0.0.1 --port 8000
+python3 backend/tests/test_edge_cases.py
 ```
 
-### Step 3: Access Application Interface
-Open your web browser and navigate to:
+### Step 3: Launch Backend Server & UI
+```bash
+python3 backend/app.py
+```
+Open your web browser to:
 ```text
-http://127.0.0.1:8000/
-```
-
-### Step 4: Run Automated Edge Case Unit Tests
-Execute the 5 automated edge case unit tests via CLI or directly in the UI dashboard:
-```bash
-python backend/tests/test_edge_cases.py
+http://127.0.0.1:8080/
 ```
 
 ---
 
-## 5. Constraint Engine Rules & Override Protocol
+## 5. Constraint Engine Rules & Operational Realism
 
 ### Hard Constraints (Never Violated Without Authorised Override)
 1. **Payload Weight Capacity**: Dynamic carried payload must not exceed vehicle limit ($W_{current} \le W_{max}$).
@@ -103,6 +99,10 @@ python backend/tests/test_edge_cases.py
 3. **Physical 3D Fit**: Bulky return dimensions ($L_{item} \times W_{item} \times H_{item}$) must physically fit inside usable cargo box dimensions ($L_{veh} \times W_{veh} \times H_{veh}$).
 4. **Time Windows**: Vehicle arrival + service time must complete within customer requested window ($[T_{start}, T_{end}]$).
 5. **Workforce Shift Limits**: Total route duration including depot return trip must complete within driver shift bounds ($T_{depot\_return} \le T_{shift\_end}$).
+
+### Operational Speed & Service Time Assumptions
+- **Urban Speed Model**: Average urban fleet velocity is set to $35\text{ km/h}$ with a $1.3\times$ road circuitry multiplier applied over direct Haversine distances to model real city street geometry.
+- **Service Time**: Fixed service time allocation of 20 minutes per return pickup and 15–30 minutes per forward delivery to account for crew loading/unloading and customer sign-off.
 
 ### Dispatcher Authorised Override Mechanism
 When operational emergencies occur, an authorised dispatcher can override a soft constraint or minor tolerance via the **Authorised Overrides Portal**.
@@ -120,9 +120,8 @@ The engine re-calculates route feasibility with the approved override logged in 
 ## 6. Error Diagnostic Breakdown (Sample Failure Cases)
 
 When a return request cannot be safely or feasibly integrated, the planner provides explicit diagnostic root causes:
-- `R008` (Excessively Heavy Sectional) $\rightarrow$ **Rejected**: Item weight (280 kg) exceeds remaining vehicle capacity.
 - `R012` (Oversized Conference Table) $\rightarrow$ **Rejected**: Item length (4.2m) exceeds vehicle maximum usable length (4.0m).
-- `R004` (Damaged Wardrobe) $\rightarrow$ **Reassigned to V03**: Volume capacity on original vehicle V02 exceeded; successfully rerouted to Box Truck Large (V03).
+- `R008` (Excessively Heavy Sectional) $\rightarrow$ **Successfully Integrated**: Reallocated to large payload capacity vehicle V03.
 
 ---
 
@@ -135,9 +134,9 @@ When a return request cannot be safely or feasibly integrated, the planner provi
 
 ### Deployment Checklist
 - [x] Delivery, Return, and Vehicle CSV schema validated.
-- [x] 5 Edge case unit tests passing cleanly.
-- [x] Baseline separate return route solver verified.
-- [x] Objective A (Cost/Distance) & Objective B (Service/Reliability) compared.
+- [x] 5 Edge case unit tests passing cleanly out of the box.
+- [x] Baseline separate return route solver verified ($300.6\text{ km}$).
+- [x] Objective A (Cost/Distance) & Objective B (Service/Reliability) verified ($125.6\text{ km}$).
 - [x] Dispatcher manual override workflow and audit logging verified.
 - [x] CSV export function tested.
 - [x] Leaflet route visualizer rendering multi-color vehicle paths.
